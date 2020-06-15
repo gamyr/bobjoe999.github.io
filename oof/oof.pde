@@ -8,10 +8,10 @@ void setup() {
 
 void draw() {
   background(0);
-  if(frameCount%(round(frameRate*3/10)*10) == 0) {
+  if (frameCount%(round(frameRate*3/10)*10) == 0) {
     players = (Player[])append(players, new Player(1));
   }
-  for(int i = 1; i<players.length; i++) {
+  for (int i = 1; i<players.length; i++) {
     players[i].update();
   }
 }
@@ -31,43 +31,34 @@ class Player {
     this.isComp = isComp;
   }
   void forward() {
-    if(isComp == 0) y += speed;
+    if (isComp == 0) y += speed;
   }
   void left() {
-    if(isComp == 0) rotate(1*PI/180);
+    if (isComp == 0) rotate(1*PI/180);
   }
   void right() {
-    if(isComp == 0) rotate(2*PI-(1*PI/180));
+    if (isComp == 0) rotate(2*PI-(1*PI/180));
   }
   void shootright() {
-    
   }
   void update() {
-    if(frameCount%(round(frameRate*0.1/10)*10) == 0) {
+    if (frameCount%(round(frameRate*0.1/10)*10) == 0) {
       direction = directions[int(random(directions.length))];
       olddirection = direction;
     }
-    if(isComp == 1) {
-      switch(direction) {
-        //case "up":
-        //  y -= speed;
-        //  println(direction);
-        case "right":
-          x += speed;
-          println(direction);
-        //case "left":
-        //  x -= speed;
-        //  println(direction);
-        case "down":
-          y += speed;
-          println(direction);
-      }
+    if (isComp == 1) {
+      if (direction == "right") x += speed;
+      if (direction == "left") x -= speed+0.02;
+      if (direction == "down") y += speed+0.02;
+      if (direction == "up") y -= speed;
+      x = constrain(x, 0, width);
+      y = constrain(y, 0, height);
     }
-    if((x>width+size/2) || (x<-size/2) || (y>height+size/2) || (y<-size/2)) {
+    if ((x>width+size/2) || (x<-size/2) || (y>height+size/2) || (y<-size/2)) {
       dead = 1;
     }
     fill(255);
-    if(dead == 0) rect(x, y, size, size);
+    if (dead == 0) rect(x, y, size, size);
   }
 }
 
@@ -82,10 +73,9 @@ class Bullet {
     this.y = y;
     this.direction = direction;
   }
+  void shoot(String direction) {
+     
+  }
   void update() {
-    switch(direction) {
-      case "right":
-        x += speed;
-    }
   }
 }
