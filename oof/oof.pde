@@ -1,9 +1,9 @@
 Player[] players =  new Player[0];
+Player main = new Player(0);
 
 void setup() {
   rectMode(CENTER);
   size(500, 500);
-  players = (Player[])append(players, new Player(0));
 }
 
 void draw() {
@@ -14,6 +14,12 @@ void draw() {
   for (int i = 1; i<players.length; i++) {
     players[i].update();
   }
+}
+
+void keyPressed() {
+  if (key == 'w' || key == 'W') main.forward();
+  if (key == 'd' || key == 'D') main.right();
+  if (key == 'e' || key == 'E') main.left();
 }
 
 
@@ -42,22 +48,18 @@ class Player {
   void shootright() {
   }
   void update() {
-    if (frameCount%(round(frameRate*0.1/10)*10) == 0) {
+    if ((frameCount%(round(frameRate*0.1/10)*10) == 0) & isComp == 1) {
       direction = directions[int(random(directions.length))];
       olddirection = direction;
     }
-    if (isComp == 1) {
-      if (direction == "right") x += speed;
-      if (direction == "left") x -= speed+0.02;
-      if (direction == "down") y += speed+0.02;
-      if (direction == "up") y -= speed;
-      x = constrain(x, 0, width);
-      y = constrain(y, 0, height);
-    }
-    if ((x>width+size/2) || (x<-size/2) || (y>height+size/2) || (y<-size/2)) {
-      dead = 1;
-    }
-    fill(255);
+    if (direction == "right") x += speed;
+    if (direction == "left") x -= speed+0.003;
+    if (direction == "down") y += speed+0.007;
+    if (direction == "up") y -= speed;
+    x = constrain(x, 0, width);
+    y = constrain(y, 0, height);
+    if (isComp == 1) fill(255, 0, 0);
+    else fill(0, 255, 0);
     if (dead == 0) rect(x, y, size, size);
   }
 }
@@ -73,9 +75,10 @@ class Bullet {
     this.y = y;
     this.direction = direction;
   }
-  void shoot(String direction) {
-     
-  }
   void update() {
+    if (direction == "right") x += speed;
+    if (direction == "left") x -= speed;
+    if (direction == "down") y += speed;
+    if (direction == "up") y -= speed;
   }
 }
