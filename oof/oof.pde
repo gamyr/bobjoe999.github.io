@@ -2,6 +2,7 @@ Player[] players = new Player[0];
 Player main;
 PImage lose;
 int lost = 0;
+int x = 3;
 
 void setup() {
   rectMode(CENTER);
@@ -13,7 +14,7 @@ void setup() {
 void draw() {
   if (lost == 0) {
     background(0);
-    if (frameCount%(round(frameRate*3/10)*10) == 0) {
+    if (frameCount%(round(frameRate*x/10)*10) == 0) {
       players = (Player[])append(players, new Player(1));
     }
     for (int i = 0; i<players.length; i++) {
@@ -41,6 +42,7 @@ void draw() {
       if (key == 'a' || key == 'A') main.left();
       if (key == 's' || key == 'S') main.back();
     }
+    if (x > 1) x+=0.05;
   }
   else {
     image(lose, 0, 0);
