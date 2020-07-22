@@ -1,38 +1,49 @@
 Player[] players = new Player[0];
 Player main;
-
+PImage lose;
+int lost = 0;
 
 void setup() {
   rectMode(CENTER);
   size(500, 500);
   main = new Player(0);
+  lose = loadImage("lose.png");
 }
 
 void draw() {
-  background(0);
-  if (frameCount%(round(frameRate*5/10)*10) == 0) {
-    players = (Player[])append(players, new Player(1));
-  }
-  for (int i = 0; i<players.length; i++) {
-    players[i].update();
-    for (int j = 1; j<main.bullets.length; j++) {
-      if (rectBall(players[i].x, players[i].y, players[i].size, players[i].size, main.bullets[j].x,main.bullets[j].x, 10) && i!=j) {
-        players[i].isComp = 2;
+  if (lost == 0) {
+    background(0);
+    if (frameCount%(round(frameRate*3/10)*10) == 0) {
+      players = (Player[])append(players, new Player(1));
+    }
+    for (int i = 0; i<players.length; i++) {
+      players[i].update();
+      for (int j = 1; j<main.bullets.length; j++) {
+        if (rectBall(players[i].x, players[i].y, players[i].size, players[i].size, main.bullets[j].x, main.bullets[j].y, 10) && i!=j) players[i].isComp = 2;
+      }
+      for (int j = 1; j<players[i].bullets.length; j++) {
+        if (rectBall(main.x, main.y, main.size, main.size, players[i].bullets[j].x, players[i].bullets[j].y, 10)) {
+          print("Score: "+str(millis()/3000));
+          lost = 1;
+        }
       }
     }
-  }
-  main.update();
-  if (keyPressed) {
-    if (key == CODED) {
-      if (keyCode == UP) main.shoot("up");
-      if (keyCode == DOWN) main.shoot("down");
-      if (keyCode == LEFT) main.shoot("left");
-      if (keyCode == RIGHT) main.shoot("right");
+    main.update();
+    if (keyPressed) {
+      if (key == CODED) {
+        if (keyCode == UP) main.shoot("up");
+        if (keyCode == DOWN) main.shoot("down");
+        if (keyCode == LEFT) main.shoot("left");
+        if (keyCode == RIGHT) main.shoot("right");
+      }
+      if (key == 'w' || key == 'W') main.forward();
+      if (key == 'd' || key == 'D') main.right();
+      if (key == 'a' || key == 'A') main.left();
+      if (key == 's' || key == 'S') main.back();
     }
-    if (key == 'w' || key == 'W') main.forward();
-    if (key == 'd' || key == 'D') main.right();
-    if (key == 'a' || key == 'A') main.left();
-    if (key == 's' || key == 'S') main.back();
+  }
+  else {
+    image(lose, 0, 0);
   }
 }
 
@@ -90,7 +101,7 @@ class Player {
     }
   }
   void update() {
-    if ((frameCount%(round((frameRate+1)*0.1/10)*10) == 0) & isComp == 1) {
+    if ((frameCount%((round((frameRate+1)*0.1/10)*10)+1) == 0) & isComp == 1) {
       direction = directions[int(random(directions.length))];
       olddirection = direction;
       bullets = (Bullet[])append(bullets, new Bullet(x, y, directions[int(random(directions.length))]));
