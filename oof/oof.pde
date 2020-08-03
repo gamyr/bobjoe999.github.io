@@ -7,7 +7,7 @@ int score = 0;
 
 void setup() {
   rectMode(CENTER);
-  size(500, 500);
+  size(500, 500);  
   main = new Player(0);
   lose = loadImage("lose.png");
 }
@@ -18,7 +18,7 @@ void draw() {
     if ((frameCount%((round((frameRate+1)*x/10)*10)+1) == 0)) {
       players = (Player[])append(players, new Player(1));
       score += 1;
-      if (x > 0.75) x -= 0.2;
+      if (x > 0.75) x -= 0.1;
     }
     for (int i = 0; i<players.length; i++) {
       players[i].update();
