@@ -2,7 +2,8 @@ Player[] players = new Player[0];
 Player main;
 PImage lose;
 int lost = 0;
-int x = 3;
+float x = 3;
+int score = 0;
 
 void setup() {
   rectMode(CENTER);
@@ -14,8 +15,10 @@ void setup() {
 void draw() {
   if (lost == 0) {
     background(0);
-    if (frameCount%(round(frameRate*x/10)*10) == 0) {
+    if ((frameCount%((round((frameRate+1)*x/10)*10)+1) == 0)) {
       players = (Player[])append(players, new Player(1));
+      score += 1;
+      if (x > 0.75) x -= 0.2;
     }
     for (int i = 0; i<players.length; i++) {
       players[i].update();
@@ -24,7 +27,7 @@ void draw() {
       }
       for (int j = 1; j<players[i].bullets.length; j++) {
         if (rectBall(main.x, main.y, main.size, main.size, players[i].bullets[j].x, players[i].bullets[j].y, 10)) {
-          print("Score: "+str(millis()/3000));
+          print("Score: "+score);
           lost = 1;
         }
       }
@@ -42,9 +45,7 @@ void draw() {
       if (key == 'a' || key == 'A') main.left();
       if (key == 's' || key == 'S') main.back();
     }
-    if (x > 1) x+=0.05;
-  }
-  else {
+  } else {
     image(lose, 0, 0);
   }
 }
@@ -78,8 +79,8 @@ class Player {
   int isComp;
   int speed = 5;
   int size = 50;
-  int x = 250;
-  int y = 250;
+  int x = int(random(500));
+  int y = int(random(500));
   int dead = 0;
   Bullet[] bullets = new Bullet[0];
   Player(int isComp) {
@@ -140,12 +141,4 @@ class Bullet {
     if (direction == "up") y -= speed;
     ellipse(x, y, 10, 10);
   }
-}
-
-void remove(Player[] array, int index) {
-  Player[] y = new Player[0];
-  for (int i=0; i<array.length; i++) {
-    if (array[index] != array[i]) y = (Player[])append(y, array[i]);
-  }
-  array = y;
 }
