@@ -7,5 +7,4 @@ sudo pip3 install --upgrade adafruit-python-shell click==7.0
 sudo apt-get install -y git
 git clone https://github.com/adafruit/Raspberry-Pi-Installer-Scripts.git
 cd Raspberry-Pi-Installer-Scripts
-echo "display_hdmi_rotate=0x10000" | sudo tee -a /boot/config.txt
 sudo python3 adafruit-pitft.py --display=st7789_240x135 --rotation=90 --install-type=fbcp
