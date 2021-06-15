@@ -1,33 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
   <head>
-    <title>Down | Home</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <script src="https://www.w3schools.com/lib/w3.js">
-    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | Down</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
-    <div class="w3-container w3-pale-red w3-hover-red">
-      <a href="https://bobjoe999.github.io"><pre><h1>Home</h1></pre></a>
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas" width=960 height=600></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-mobile-warning">
+        WebGL builds are not supported on mobile devices.
+      </div>
+      <div id="unity-footer">
+        <div id="unity-webgl-logo"></div>
+        <div id="unity-fullscreen-button"></div>
+        <div id="unity-build-title">Down</div>
+      </div>
     </div>
-    <div class="w3-container w3-pale-red w3-hover-red">
-      <a href="/down/Down/WinDown.zip"><pre><h1>Windows Download</h1></pre></a>
-    </div>
-    <div class="w3-container w3-pale-red w3-hover-red">
-      <a href="/down/Down/MacDown.zip"><pre><h1>Macintosh Download</h1></pre></a>
-    </div>
-    <div class="w3-container w3-pale-red w3-hover-red">
-      <a href="/down/Down/LinuxDown.zip"><pre><h1>Linux Download</h1></pre></a>
-    </div>
-	<div class="w3-container w3-pale-red w3-hover-red">
-      <a href="https://bobjoe999.github.io/down/play.html"><pre><h1>Play Online</h1></pre></a>
-    </div>
-    <div class="w3-container w3-pale-green w3-hover-green">
-      <p>Download Instructions: Wait for the file to finish downloading. In Google Chrome, click on the small arrow next to the file name, and then click Show In Folder. Then (for windows), right-clik on the folder, the click Extract All. Next, click Extract. Then, you should see another window open. Double-click on the file named "Down.exe". Maybe, Winodws will open some window saying that they protected you. Click on More Info, then a button should appear at the bottom sayng Run anyway. Click that. Please trust me. I am not trying to hurt you. It should open your game. After you are done, press the Windows icon key on your keyboard, or press Alt+tab. Then, right click on the Unity icon on your taskbar and click Close Window.</p>
-    </div>
-    <div class="w3-container w3-pale-green w3-hover-green">
-      <p>Instructions: Use the arrow keys to collect the glowing coins and go through the holes. You have a hundred seconds to get to the last hole. If you don't, you lose. The points are the amount of coins you collected, the time is how much time you have left, and your score is the time plus the points.</p>
-    </div>
+    <script>
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/Build.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/Build.data.gz",
+        frameworkUrl: buildUrl + "/Build.framework.js.gz",
+        codeUrl: buildUrl + "/Build.wasm.gz",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "DefaultCompany",
+        productName: "Down",
+        productVersion: "0.1",
+      };
+
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      var mobileWarning = document.querySelector("#unity-mobile-warning");
+
+      // By default Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        container.className = "unity-mobile";
+        // Avoid draining fillrate performance on mobile devices,
+        // and default/override low DPI mode on mobile browsers.
+        config.devicePixelRatio = 1;
+        mobileWarning.style.display = "block";
+        setTimeout(() => {
+          mobileWarning.style.display = "none";
+        }, 5000);
+      } else {
+        canvas.style.width = "960px";
+        canvas.style.height = "600px";
+      }
+      loadingBar.style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+        }).then((unityInstance) => {
+          loadingBar.style.display = "none";
+          fullscreenButton.onclick = () => {
+            unityInstance.SetFullscreen(1);
+          };
+        }).catch((message) => {
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
+    </script>
   </body>
 </html>
